@@ -8,3 +8,12 @@ type Query {
   posts: [Post!]!
   post(id: ID!): Post
 }
+
+input NewPost {
+  content: String!
+  authorID: ID!
+}
+
+type Mutation {
+  createPost(input: NewPost!): Post!
+}
