@@ -1,15 +1,15 @@
-FROM node:18
+FROM golang:1.23-alpine AS builder
 
-WORKDIR /app/
+WORKDIR /app
 
-COPY package*.json ./
-
-RUN npm install
+COPY go.mod go.sum ./
+RUN go mod download
 
 COPY . .
+RUN go build -o payments-service main.go
 
-RUN npm run build
-
+FROM alpine:latest
+WORKDIR /root/
+COPY --from=builder /app/payments-service .
 EXPOSE 4002
-
-CMD ["node", "dist/index.js"]
+CMD ["./payments-service"]
